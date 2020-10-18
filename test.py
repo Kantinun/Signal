@@ -20,6 +20,7 @@ class Osci ():
     def ch_display (self,ch): #display ch 
         if (self.ch_on):
             self.os.write(f"CHAN{str(ch)}:DISP ON")
+            self.os.write(f':CHANnel{str(ch)}:PROBe 1')
             self.ch_on = False
         else:
             self.os.write(f"CHAN{str(ch)}:DISP OFF")
@@ -35,6 +36,9 @@ class Osci ():
     def tg_lv(self, value):
         self.start_trig_lv = self.start_trig_lv + value
         self.os.write(f':TRIGger:EDGe:LEV {str(self.start_trig_lv)}')
+    
+    def setProbeRatio(self, channel,value):
+        self.os.write(f':CHANnel{str(channel)}:PROBe {str(value)}')
 
 
-print('\n volkzapp')
+
