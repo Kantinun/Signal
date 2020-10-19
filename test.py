@@ -11,6 +11,7 @@ class Osci ():
         self.indexcoupling = 0
         self.start_trig_lv = 0
         self.indexTrigSweep = 0
+        self.indexTrigSl = 0
         self.probeRatio = "1"
         self.channel = "1"
         self.ch_on = True
@@ -72,7 +73,7 @@ class Osci ():
             self.indexVol = 0
             self.os.write(f":TRIGger:SWEep {sweepList[self.indexTrigSweep]}")
         if self.indexTrigSweep>len(sweepList):
-            self.indexVol=len(volLsweepListist)
+            self.indexVol=len(sweepList)
             self.os.write(f":TRIGger:SWEep {sweepList[self.indexTrigSweep]}")
         self.os.write(f":TRIGger:SWEep {sweepList[self.indexTrigSweep]}")
         self.indexTrigSweep += 1
@@ -80,6 +81,16 @@ class Osci ():
     def setTrigSource(self):
         self.os.write(f":TRIGger:EDGe:SOURce {self.channel}")
 
+    def setTrigSlope(self):
+        slopeList = ["POS", "NEG", "RFAL"]
+        if self.indexTrigSl<0:
+            self.indexTrigSl = 0
+            self.os.write(f":TRIGger:EDGe:SLOPe {slopeList[self.indexTrigSweep]}")
+        if self.indexTrigSl>len(slopeList):
+            self.indexVol=len(slopeList)
+            self.os.write(f":TRIGger:EDGe:SLOPe {slopeList[self.indexTrigSweep]}")
+        self.os.write(f":TRIGger:EDGe:SLOPe {slopeList[self.indexTrigSweep]}")
+        self.indexTrigSl += 1
     
 
-
+    
