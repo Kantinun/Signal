@@ -34,7 +34,6 @@ class Osci ():
         volList = [str(0.001*self.probeRatio), str(0.002*self.probeRatio), str(0.005*self.probeRatio), str(0.01*self.probeRatio), str(0.02*self.probeRatio), str(0.05*self.probeRatio), str(0.1*self.probeRatio), str(0.2*self.probeRatio), str(0.5*self.probeRatio), str(1*self.probeRatio), str(2*self.probeRatio), str(5*self.probeRatio)]
         if self.indexVol==len(volList):
             self.indexVol=0
-            self.os.write(f"CHAN{str(ch)}:SCAL {volList[self.indexVol]}")
         self.os.write(f"CHAN{str(ch)}:SCAL {volList[self.indexVol]}")
         if direction == "up":
             self.indexVol +=1
@@ -57,7 +56,6 @@ class Osci ():
         coupList = ["DC, AC, GND"]
         if self.indexcoupling==len(coupList):
             self.indexcoupling=0
-            self.os.write(f':CHANnel{self.channel}:COUPling {coupList[self.indexcoupling]}')
         self.os.write(f':CHANnel{self.channel}:COUPling {coupList[self.indexcoupling]}')
         self.indexcoupling +=1
     
@@ -65,7 +63,6 @@ class Osci ():
         sweepList = ["AUTO", "NORM", "SING"]
         if self.indexTrigSweep==len(sweepList):
             self.indexVol=0
-            self.os.write(f":TRIGger:SWEep {sweepList[self.indexTrigSweep]}")
         self.os.write(f":TRIGger:SWEep {sweepList[self.indexTrigSweep]}")
         self.indexTrigSweep += 1
 
@@ -76,7 +73,6 @@ class Osci ():
         slopeList = ["POS", "NEG", "RFAL"]
         if self.indexTrigSl==len(slopeList):
             self.indexVol=0
-            self.os.write(f":TRIGger:EDGe:SLOPe {slopeList[self.indexTrigSweep]}")
         self.os.write(f":TRIGger:EDGe:SLOPe {slopeList[self.indexTrigSweep]}")
         self.indexTrigSl += 1
     
