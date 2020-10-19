@@ -32,11 +32,8 @@ class Osci ():
 
     def set_vol_scale (self , ch, direction):
         volList = [str(0.001*self.probeRatio), str(0.002*self.probeRatio), str(0.005*self.probeRatio), str(0.01*self.probeRatio), str(0.02*self.probeRatio), str(0.05*self.probeRatio), str(0.1*self.probeRatio), str(0.2*self.probeRatio), str(0.5*self.probeRatio), str(1*self.probeRatio), str(2*self.probeRatio), str(5*self.probeRatio)]
-        if self.indexVol<0:
-            self.indexVol = 0
-            self.os.write(f"CHAN{str(ch)}:SCAL {volList[self.indexVol]}")
-        if self.indexVol>len(volList):
-            self.indexVol=len(volList)
+        if self.indexVol==len(volList):
+            self.indexVol=0
             self.os.write(f"CHAN{str(ch)}:SCAL {volList[self.indexVol]}")
         self.os.write(f"CHAN{str(ch)}:SCAL {volList[self.indexVol]}")
         if direction == "up":
@@ -58,22 +55,16 @@ class Osci ():
 
     def setCoupling(self):
         coupList = ["DC, AC, GND"]
-        if self.indexcoupling<0:
-            self.indexVol = 0
-            self.os.write(f':CHANnel{self.channel}:COUPling {coupList[self.indexcoupling]}')
-        if self.indexcoupling>len(coupList):
-            self.indexVol=len(coupList)
+        if self.indexcoupling==len(coupList):
+            self.indexcoupling=0
             self.os.write(f':CHANnel{self.channel}:COUPling {coupList[self.indexcoupling]}')
         self.os.write(f':CHANnel{self.channel}:COUPling {coupList[self.indexcoupling]}')
         self.indexcoupling +=1
     
     def setTrigSweep(self):
         sweepList = ["AUTO", "NORM", "SING"]
-        if self.indexTrigSweep<0:
-            self.indexVol = 0
-            self.os.write(f":TRIGger:SWEep {sweepList[self.indexTrigSweep]}")
-        if self.indexTrigSweep>len(sweepList):
-            self.indexVol=len(sweepList)
+        if self.indexTrigSweep==len(sweepList):
+            self.indexVol=0
             self.os.write(f":TRIGger:SWEep {sweepList[self.indexTrigSweep]}")
         self.os.write(f":TRIGger:SWEep {sweepList[self.indexTrigSweep]}")
         self.indexTrigSweep += 1
@@ -83,14 +74,11 @@ class Osci ():
 
     def setTrigSlope(self):
         slopeList = ["POS", "NEG", "RFAL"]
-        if self.indexTrigSl<0:
-            self.indexTrigSl = 0
-            self.os.write(f":TRIGger:EDGe:SLOPe {slopeList[self.indexTrigSweep]}")
-        if self.indexTrigSl>len(slopeList):
-            self.indexVol=len(slopeList)
+        if self.indexTrigSl==len(slopeList):
+            self.indexVol=0
             self.os.write(f":TRIGger:EDGe:SLOPe {slopeList[self.indexTrigSweep]}")
         self.os.write(f":TRIGger:EDGe:SLOPe {slopeList[self.indexTrigSweep]}")
         self.indexTrigSl += 1
     
-
+    
     
