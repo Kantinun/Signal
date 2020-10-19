@@ -31,7 +31,7 @@ class Osci ():
             self.ch_on = True
 
     def set_vol_scale (self , ch, direction):
-        volList = [str(0.001*self.probeRatio), str(0.002*self.probeRatio), str(0.005*self.probeRatio), str(0.01*self.probeRatio), str(0.02*self.probeRatio), str(0.05*self.probeRatio), str(0.1*self.probeRatio), str(0.2*self.probeRatio), str(0.5*self.probeRatio), str(1*self.probeRatio), str(2*self.probeRatio), str(5*self.probeRatio)]
+        volList = [str(0.001*int(self.probeRatio)), str(0.002*int(self.probeRatio)), str(0.005*int(self.probeRatio)), str(0.01*int(self.probeRatio)), str(0.02*int(self.probeRatio)), str(0.05*int(self.probeRatio)), str(0.1*int(self.probeRatio)), str(0.2*int(self.probeRatio)), str(0.5*int(self.probeRatio)), str(1*int(self.probeRatio)), str(2*int(self.probeRatio)), str(5*int(self.probeRatio))]
         if self.indexVol==len(volList):
             self.indexVol=0
         self.os.write(f"CHAN{str(ch)}:SCAL {volList[self.indexVol]}")
@@ -50,7 +50,6 @@ class Osci ():
     def setProbeRatio(self, channel,value):
         self.os.write(f':CHANnel{str(channel)}:PROBe {str(value)}')
         self.probeRatio = value
-        self.set_vol_scale()
 
     def setCoupling(self):
         coupList = ["DC, AC, GND"]
@@ -62,7 +61,7 @@ class Osci ():
     def setTrigSweep(self):
         sweepList = ["AUTO", "NORM", "SING"]
         if self.indexTrigSweep==len(sweepList):
-            self.indexVol=0
+            self.indexTrigSweep=0
         self.os.write(f":TRIGger:SWEep {sweepList[self.indexTrigSweep]}")
         self.indexTrigSweep += 1
 
@@ -72,8 +71,8 @@ class Osci ():
     def setTrigSlope(self):
         slopeList = ["POS", "NEG", "RFAL"]
         if self.indexTrigSl==len(slopeList):
-            self.indexVol=0
-        self.os.write(f":TRIGger:EDGe:SLOPe {slopeList[self.indexTrigSweep]}")
+            self.indexTrigSl=0
+        self.os.write(f":TRIGger:EDGe:SLOPe {slopeList[self.indexTrigSl]}")
         self.indexTrigSl += 1
     
     
