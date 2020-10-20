@@ -12,6 +12,8 @@ class Osci ():
         self.start_trig_lv = 0
         self.indexTrigSweep = 0
         self.indexTrigSl = 0
+        self.vertiPos = 0
+        self.horiPos = 0
         self.probeRatio = "1"
         self.channel = "1"
         self.ch_on = True
@@ -75,5 +77,18 @@ class Osci ():
         self.os.write(f":TRIGger:EDGe:SLOPe {slopeList[self.indexTrigSl]}")
         self.indexTrigSl += 1
     
+    def setVerticalPosition(self, direction):
+        if direction == "up":
+            self.vertiPos += 20e^-6
+        elif direction == "down":
+            self.vertiPos -= 20e^-6
+        self.os.write(f":CHANnel1:OFFSet {self.vertiPos}")
     
+    def setHorizontalPosition(self, direction):
+        if direction == "up":
+            self.horiPos += 20e^-6
+        elif direction == "down":
+            self.horiPos -= 20e^-6
+        self.os.write(f":TIMebase:MAIN:OFFSet {self.horiPos}")
+
     
