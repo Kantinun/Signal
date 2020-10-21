@@ -86,9 +86,9 @@ class Osci ():
     
     def setHorizontalPosition(self, direction):
         if direction == "up":
-            self.horiPos += 20e^-6
+            self.horiPos += 20e-6
         elif direction == "down":
-            self.horiPos -= 20e^-6
+            self.horiPos -= 20e-6
         self.os.write(f":TIMebase:MAIN:OFFSet {self.horiPos}")
 
     
