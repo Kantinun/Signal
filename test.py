@@ -27,6 +27,9 @@ class Osci ():
     
     def run (self): # run
         self.os.write(':RUN')
+
+    def stop (self): # run
+        self.os.write(':STOP')
     
     def auto (self):
         self.os.write(':AUToscale')
@@ -50,11 +53,21 @@ class Osci ():
         elif direction == "down":
             self.chanList[self.indCh].indexVol -=1
 
-    def set_time_scale (self , scale):
-        self.os.write(':TIM:MAIN:SCAL ' + str(scale))
+    def set_time_scale (self , direction):
+        timeList = [str(0.001*int(self.chanList[self.indCh].probeRatio)), str(0.002*int(self.chanList[self.indCh].probeRatio)), str(0.005*int(self.chanList[self.indCh].probeRatio)), str(0.01*int(self.chanList[self.indCh].probeRatio)), str(0.02*int(self.chanList[self.indCh].probeRatio)), str(0.05*int(self.chanList[self.indCh].probeRatio)), str(0.1*int(self.chanList[self.indCh].probeRatio)), str(0.2*int(self.chanList[self.indCh].probeRatio)), str(0.5*int(self.chanList[self.indCh].probeRatio)), str(1*int(self.chanList[self.indCh].probeRatio)), str(2*int(self.chanList[self.indCh].probeRatio)), str(5*int(self.chanList[self.indCh].probeRatio))]
+        if self.chanList[self.indCh].indexTime == len(timeList):
+            self.chanList[self.indCh].indexTime=0
+        self.os.write(f":TIM:MAIN:SCAL {timeList[self.chanList[self.indCh]]}")
+        if direction == "up":
+            self.chanList[self.indCh].indexTime +=1
+        elif direction == "down":
+            self.chanList[self.indCh].indexTime -=1
 
-    def tg_lv(self, value):
-        self.chanList[self.indCh].start_trig_lv = self.chanList[self.indCh].start_trig_lv + value
+    def tg_lv(self, direction):
+        if direction == "up":
+            self.chanList[self.indCh].start_trig_lv += 20e-6
+        elif direction == "down":
+            self.chanList[self.indCh].start_trig_lv -= 20e-6
         self.os.write(f':TRIGger:EDGe:LEV {str(self.chanList[self.indCh].start_trig_lv)}')
     
     def setProbeRatio(self, value):
