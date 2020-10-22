@@ -13,7 +13,6 @@ class Channel():
         self.vertiPos = 0
         self.horiPos = 0
         self.probeRatio = "1"
-        self.ch_on = True
         self.channel = str(channel)
 
 class Osci ():
@@ -21,7 +20,7 @@ class Osci ():
         self.os =  vxi11.Instrument(str(ip))
 
         self.chanList = []
-        for i in range(1,3):
+        for i in range(1,5):
             self.chanList.append(Channel(i))
 
         self.indCh = 0
@@ -32,12 +31,12 @@ class Osci ():
     def auto (self):
         self.os.write(':AUToscale')
 
-    def ch_display (self): #display ch 
-        if (self.chanList[self.indCh].ch_on):
+    def ch_display (self, status): #display ch 
+        if status=="on":
             self.os.write(f"CHAN{self.chanList[self.indCh].channel}:DISP ON")
             self.os.write(f':CHANnel{self.chanList[self.indCh].channel}:PROBe {self.chanList[self.indCh].probeRatio}')
             self.chanList[self.indCh].ch_on = False
-        else:
+        elif status == "off":
             self.os.write(f"CHAN{self.chanList[self.indCh].channel}:DISP OFF")
             self.chanList[self.indCh].ch_on = True
 
@@ -100,4 +99,5 @@ class Osci ():
             self.chanList[self.indCh].horiPos -= 20e-6
         self.os.write(f":TIMebase:MAIN:OFFSet {self.chanList[self.indCh].horiPos}")
 
-    
+    def selectCh(self, index):
+        self.indCh = index
