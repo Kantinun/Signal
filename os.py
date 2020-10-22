@@ -401,19 +401,16 @@ class Osci ():
         fid.close()
         image = Image.open(io.BytesIO(raw_data))
         return image
-        
-
-
 class CaptureImage(QDialog):
 
     def __init__(self,item):
         super().__init__()
-        self.image = QPixmap.fromImage(item)
+        self.image2 = ImageQt(item)
+        self.image = QPixmap.fromImage(self.image2)
         self.hbox = QHBoxLayout(self)
         self.image_label = QLabel(self)
         self.image_label.setPixmap(self.image)
         self.hbox.addWidget(self.image_label)
-        self.setLayout(self.hbox)
         self.setLayout(self.hbox)
         self.show()
 
@@ -426,3 +423,4 @@ if __name__ == "__main__":
     ui.btn_CAP.clicked.connect(ui.get_image)
     MainWindow.show()
     sys.exit(app.exec_())
+
