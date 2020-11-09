@@ -18,7 +18,7 @@ from test import Osci
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
-        self.scope = Osci("169.254.147.142")
+        self.scope = Osci("169.254.1.5")
         MainWindow.setObjectName("MainWindow")
         MainWindow.setEnabled(True)
         MainWindow.resize(932, 500)
@@ -379,8 +379,7 @@ class CaptureImage(QDialog):
 
     def __init__(self,item):
         super().__init__()
-        self.image2 = ImageQt(item)
-        self.image = QPixmap.fromImage(self.image2)
+        self.image = QPixmap(item)
         self.hbox = QHBoxLayout(self)
         self.image_label = QLabel(self)
         self.image_label.setPixmap(self.image)
@@ -389,7 +388,7 @@ class CaptureImage(QDialog):
         self.show()
 
 if __name__ == "__main__":
-    myOsci = Osci("169.254.147.142")
+    myOsci = Osci("169.254.1.5")
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
@@ -417,8 +416,8 @@ if __name__ == "__main__":
     ui.btn_hor_pos.clicked.connect(lambda: myOsci.setHorizontalPosition("up"))
     ui.btn_hor_neScale.clicked.connect(lambda: myOsci.set_time_scale("down"))
     ui.btn_hor_posScale.clicked.connect(lambda: myOsci.set_time_scale("up"))
-    ui.btn_T_ne.clicked.connect(lambda: myOsci.set_time_scale("down"))
-    ui.btn_T_pos.clicked.connect(lambda: myOsci.set_time_scale("up"))
+    ui.btn_T_ne.clicked.connect(lambda: myOsci.tg_lv("down"))
+    ui.btn_T_pos.clicked.connect(lambda: myOsci.tg_lv("up"))
     ui.btn_T_sweep.clicked.connect(lambda: ui.set_sweep_label(str(myOsci.sweepList[myOsci.chanList[myOsci.indCh].indexTrigSweep]))) #set sweep text
 
     ui.btn_T_sweep.clicked.connect(lambda: myOsci.setTrigSweep())

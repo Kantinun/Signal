@@ -72,9 +72,10 @@ class Osci ():
 
     def tg_lv(self, direction):
         if direction == "up":
-            self.chanList[self.indCh].start_trig_lv += 20e-6
+            self.chanList[self.indCh].start_trig_lv += 20e-3
         elif direction == "down":
-            self.chanList[self.indCh].start_trig_lv -= 20e-6
+            self.chanList[self.indCh].start_trig_lv -= 20e-3
+        print(type(self.chanList[self.indCh].start_trig_lv))
         self.os.write(f':TRIGger:EDGe:LEV {str(self.chanList[self.indCh].start_trig_lv)}')
     
     def setProbeRatio(self, value):
@@ -94,7 +95,7 @@ class Osci ():
             self.chanList[self.indCh].indexTrigSweep=0
 
     def setTrigSource(self):
-        self.os.write(f":TRIGger:EDGe:SOURce {self.chanList[self.indCh].channel}")
+        self.os.write(f":TRIGger:EDGe:SOURce CHAN{self.chanList[self.indCh].channel}")
 
     def setTrigSlope(self):
         self.os.write(f":TRIGger:EDGe:SLOPe {self.slopeList[self.chanList[self.indCh].indexTrigSl]}")
@@ -129,5 +130,4 @@ class Osci ():
         fid = open(filename, 'wb')
         fid.write(raw_data)
         fid.close()
-        image = Image.open(io.BytesIO(raw_data))
-        return image
+        return filename
