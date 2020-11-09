@@ -1,6 +1,10 @@
 import vxi11
 import matplotlib
 import matplotlib.pyplot as plt
+from PIL import Image
+import io
+import datetime
+import time
 
 class Channel():
     def __init__(self, channel):
@@ -18,6 +22,9 @@ class Channel():
 class Osci ():
     def __init__(self , ip):
         self.os =  vxi11.Instrument(str(ip))
+        self.sweepList = ["AUTO", "NORM", "SING"]
+        self.coupList = ["DC", "AC", "GND"]
+        self.slopeList = ["POS", "NEG", "RFAL"]
 
         self.chanList = []
         for i in range(1,5):
@@ -75,29 +82,26 @@ class Osci ():
         self.chanList[self.indCh].probeRatio = value
 
     def setCoupling(self):
-        coupList = ["DC, AC, GND"]
-        if self.chanList[self.indCh].indexcoupling==len(coupList):
-            self.chanList[self.indCh].indexcoupling=0
-        self.os.write(f':CHANnel{self.chanList[self.indCh].channel}:COUPling {coupList[self.chanList[self.indCh].indexcoupling]}')
+        self.os.write(f':CHANnel{self.chanList[self.indCh].channel}:COUPling {self.coupList[self.chanList[self.indCh].indexcoupling]}')
         self.chanList[self.indCh].indexcoupling +=1
+        if self.chanList[self.indCh].indexcoupling==len(self.coupList):
+            self.chanList[self.indCh].indexcoupling=0
     
     def setTrigSweep(self):
-        sweepList = ["AUTO", "NORM", "SING"]
-        if self.chanList[self.indCh].indexTrigSweep==len(sweepList):
-            self.chanList[self.indCh].indexTrigSweep=0
-        self.os.write(f":TRIGger:SWEep {sweepList[self.chanList[self.indCh].indexTrigSweep]}")
+        self.os.write(f":TRIGger:SWEep {self.sweepList[self.chanList[self.indCh].indexTrigSweep]}")
         self.chanList[self.indCh].indexTrigSweep += 1
+        if self.chanList[self.indCh].indexTrigSweep==len(self.sweepList):
+            self.chanList[self.indCh].indexTrigSweep=0
 
     def setTrigSource(self):
         self.os.write(f":TRIGger:EDGe:SOURce {self.chanList[self.indCh].channel}")
 
     def setTrigSlope(self):
-        slopeList = ["POS", "NEG", "RFAL"]
-        if self.chanList[self.indCh].indexTrigSl==len(slopeList):
-            self.chanList[self.indCh].indexTrigSl=0
-        self.os.write(f":TRIGger:EDGe:SLOPe {slopeList[self.chanList[self.indCh].indexTrigSl]}")
+        self.os.write(f":TRIGger:EDGe:SLOPe {self.slopeList[self.chanList[self.indCh].indexTrigSl]}")
         self.chanList[self.indCh].indexTrigSl += 1
-    
+        if self.chanList[self.indCh].indexTrigSl==len(self.slopeList):
+            self.chanList[self.indCh].indexTrigSl=0
+        
     def setVerticalPosition(self, direction):
         if direction == "up":
             self.chanList[self.indCh].vertiPos += 20e-6
@@ -114,3 +118,16 @@ class Osci ():
 
     def selectCh(self, index):
         self.indCh = index
+        self.os.write(f":TRIGger:EDGe:SOURce {self.chanList[self.indCh].channel}")
+
+    def write_screen_capture(self, filename=''):
+        self.os.write(':DISP:DATA? ON,OFF,PNG')
+        raw_data = self.os.read_raw()[11:] # strip off first 11 bytes
+        # save image file
+        if (filename == ''):
+            filename = "rigol_" + datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S") +".png"
+        fid = open(filename, 'wb')
+        fid.write(raw_data)
+        fid.close()
+        image = Image.open(io.BytesIO(raw_data))
+        return image

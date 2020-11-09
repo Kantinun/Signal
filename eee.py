@@ -9,12 +9,16 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import *
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+from PIL.ImageQt import ImageQt
 import sys
 from test import Osci
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
+        self.scope = Osci("169.254.147.142")
         MainWindow.setObjectName("MainWindow")
         MainWindow.setEnabled(True)
         MainWindow.resize(932, 500)
@@ -351,13 +355,48 @@ class Ui_MainWindow(object):
         self.menuExit.setTitle(_translate("MainWindow", "Exit"))
         self.actionExit.setText(_translate("MainWindow", "EXIT"))
 
+    def get_image(self):
+        image = self.scope.write_screen_capture("")
+        self.dialog = CaptureImage(image)
+
+    def set_coupling_label (self,mode):
+        _translate = QtCore.QCoreApplication.translate
+        self.labelcoupling.setText(_translate("MainWindow", str(mode)))
+
+    def set_sweep_label (self,mode):
+        _translate = QtCore.QCoreApplication.translate
+        self.label_T_sweep.setText(_translate("MainWindow", str(mode)))
+
+    def set_tsource_label (self,mode):
+        _translate = QtCore.QCoreApplication.translate
+        self.label_T_source.setText(_translate("MainWindow", "CHAN " + str(mode)))
+
+    def set_tslope_label (self,mode):
+        _translate = QtCore.QCoreApplication.translate
+        self.label_T_slope.setText (_translate("MainWindow", str(mode)))
+
+class CaptureImage(QDialog):
+
+    def __init__(self,item):
+        super().__init__()
+        self.image2 = ImageQt(item)
+        self.image = QPixmap.fromImage(self.image2)
+        self.hbox = QHBoxLayout(self)
+        self.image_label = QLabel(self)
+        self.image_label.setPixmap(self.image)
+        self.hbox.addWidget(self.image_label)
+        self.setLayout(self.hbox)
+        self.show()
+
 if __name__ == "__main__":
-    myOsci = Osci("169.254.140.142")
+    myOsci = Osci("169.254.147.142")
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
     MainWindow.show()
+    # ui.set_coupling_label(2)
+    ui.btn_T_slope.clicked.connect(lambda : ui.set_tslope_label(myOsci.slopeList[myOsci.chanList[myOsci.indCh].indexTrigSl]))
     ui.btn_T_slope.clicked.connect(lambda : myOsci.setTrigSlope())
     ui.btn_run.clicked.connect(lambda: myOsci.run())
     ui.btn_on.clicked.connect(lambda: myOsci.ch_display("on"))
@@ -368,6 +407,7 @@ if __name__ == "__main__":
     ui.btn_ch4.clicked.connect(lambda: myOsci.selectCh(3))
     ui.btn_AUTO.clicked.connect(lambda: myOsci.auto())
     ui.btn_stop.clicked.connect(lambda: myOsci.stop())
+    ui.btn_couping.clicked.connect(lambda: ui.set_coupling_label(myOsci.coupList[myOsci.chanList[myOsci.indCh].indexcoupling]))#set couping text
     ui.btn_couping.clicked.connect(lambda: myOsci.setCoupling())
     ui.btn_ver_ne.clicked.connect(lambda: myOsci.setVerticalPosition("down"))
     ui.btn_ver_pos.clicked.connect(lambda: myOsci.setVerticalPosition("up"))
@@ -379,8 +419,14 @@ if __name__ == "__main__":
     ui.btn_hor_posScale.clicked.connect(lambda: myOsci.set_time_scale("up"))
     ui.btn_T_ne.clicked.connect(lambda: myOsci.set_time_scale("down"))
     ui.btn_T_pos.clicked.connect(lambda: myOsci.set_time_scale("up"))
+    ui.btn_T_sweep.clicked.connect(lambda: ui.set_sweep_label(str(myOsci.sweepList[myOsci.chanList[myOsci.indCh].indexTrigSweep]))) #set sweep text
+
     ui.btn_T_sweep.clicked.connect(lambda: myOsci.setTrigSweep())
+    ui.btn_T_source.clicked.connect(lambda: ui.set_tsource_label(myOsci.chanList[myOsci.indCh].channel))#set source text
     ui.btn_T_source.clicked.connect(lambda: myOsci.setTrigSource())
+    ui.btn_CAP.clicked.connect(ui.get_image)
 
 
     sys.exit(app.exec_())
+
+
